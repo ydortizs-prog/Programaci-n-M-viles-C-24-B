@@ -58,7 +58,6 @@ class Carrito {
         return subtotal + igv
     }
 
-    // Mover la función aquí adentro para que pueda leer la lista 'elementos'
     fun mostrarDetalle() {
         println("--------- DETALLE DEL CARRITO ---------")
         var i = 1
@@ -71,12 +70,33 @@ class Carrito {
     }
 }
 
-// --- EJECUCIÓN (Parte 6 / Commit 6) ---
+// --- EJECUCIÓN ---
 fun main() {
+    println("=========================================")
+    println("     CARRITO DE COMPRAS - TIENDA TECSUP")
+    println("=========================================")
+
     val carrito = Carrito()
 
-    carrito.agregarElemento(ProductoFisico("Iphone 15 Pro", 4500.0, 1, 15.0))
-    carrito.agregarElemento(ServicioDigital("Suscripcion Netflix", 40.0, 6))
+    val laptop = ProductoFisico(
+        nombre = "Laptop HP",
+        precioBase = 2500.0,
+        cantidad = 1,
+        costoEnvio = 50.0
+    )
+
+    val streaming = ServicioDigital(
+        nombre = "Netflix Premium",
+        precioBase = 45.0,
+        mesesSuscripcion = 3
+    )
+
+    carrito.agregarElemento(laptop)
+    carrito.agregarElemento(streaming)
+
+    println("Producto agregado: ${laptop.nombre}")
+    println("Servicio agregado: ${streaming.nombre}")
+    println()
 
     carrito.mostrarDetalle()
 
@@ -84,7 +104,7 @@ fun main() {
     val igv = carrito.calcularIGV(subtotal)
     val total = carrito.calcularTotal(subtotal, igv)
 
-    println(String.format("%-15s : S/ %8.2f", "Subtotal", subtotal))
-    println(String.format("%-15s : S/ %8.2f", "IGV (18%)", igv))
-    println(String.format("%-15s : S/ %8.2f", "TOTAL A PAGAR", total))
+    println(String.format("%-20s S/ %8.2f", "Subtotal:", subtotal))
+    println(String.format("%-20s S/ %8.2f", "IGV (18%):", igv))
+    println(String.format("%-20s S/ %8.2f", "TOTAL A PAGAR:", total))
 }
