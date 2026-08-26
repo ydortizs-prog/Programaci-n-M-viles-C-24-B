@@ -1,5 +1,6 @@
 package com.ortiz.lab02carritokotlin
 
+
 // --- ABSTRACCIÓN ---
 abstract class ElementoCarrito(
     val nombre: String,
@@ -8,14 +9,17 @@ abstract class ElementoCarrito(
     abstract fun calcularImporte(): Double
 }
 
-// --- HERENCIA ---
+// --- HERENCIA Y POLIMORFISMO ---
 class ProductoFisico(
     nombre: String,
     precioBase: Double,
     val cantidad: Int,
     val costoEnvio: Double
 ) : ElementoCarrito(nombre, precioBase) {
-    // el override de calcularImporte se implementa en la Parte 3
+
+    override fun calcularImporte(): Double {
+        return (precioBase * cantidad) + costoEnvio
+    }
 }
 
 class ServicioDigital(
@@ -23,5 +27,10 @@ class ServicioDigital(
     precioBase: Double,
     val mesesSuscripcion: Int
 ) : ElementoCarrito(nombre, precioBase) {
-    // el override de calcularImporte se implementa en la Parte 3
+
+    override fun calcularImporte(): Double {
+        val importeSinDescuento = precioBase * mesesSuscripcion
+        val descuento = 0.10
+        return importeSinDescuento * (1 - descuento)
+    }
 }
