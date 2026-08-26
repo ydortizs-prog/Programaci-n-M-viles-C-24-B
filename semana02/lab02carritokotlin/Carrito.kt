@@ -68,7 +68,7 @@ fun main() {
 
 
     println(String.format("%-15s : S/ %8.2f", "Subtotal", subtotal))
-    println(String.format("%-15s : S/ %8.2f", "IGV (18%)", igv))
+    println(String.format("%-15s : S/ %8.2f", "IGV (20%)", igv))
     println(String.format("%-15s : S/ %8.2f", "TOTAL", total))
     println(String.format("%-15s : S/ %8.2f", "Descuento", descuento))
     println(String.format("%-15s : S/ %8.2f", "TOTAL A PAGAR", totalFinal))
