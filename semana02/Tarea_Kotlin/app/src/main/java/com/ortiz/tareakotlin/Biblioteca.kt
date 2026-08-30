@@ -20,3 +20,16 @@ data class Prestamo(
         }
     }
 }
+
+fun main() {
+    println("=== REGISTRO DE PRESTAMOS DE BIBLIOTECA ===")
+
+    print("Titulo del libro: ")
+    val titulo = readLine() ?: ""
+
+    print("Tipo de usuario (estudiante/docente): ")
+    val tipoUsuario = readLine() ?: ""
+
+    println("Titulo ingresado: $titulo")
+    println("Tipo de usuario ingresado: $tipoUsuario")
+}
