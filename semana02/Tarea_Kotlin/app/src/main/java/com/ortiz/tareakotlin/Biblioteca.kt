@@ -4,6 +4,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
+// Formato de fecha que se usara al ingresar por consola: dd/MM/yyyy
 val formato = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
 data class Prestamo(
@@ -13,7 +14,7 @@ data class Prestamo(
     val fechaEntrega: LocalDate,
     val fechaDevolucion: LocalDate
 ) {
-
+    // Calcula el estado comparando fecha de entrega vs fecha de devolucion
     fun calcularEstado(): String {
         val diasDiferencia = ChronoUnit.DAYS.between(fechaEntrega, fechaDevolucion)
         return if (diasDiferencia <= 0) {
@@ -57,5 +58,14 @@ fun main() {
         continuar = respuesta == "s"
     }
 
-    println("\nTotal de prestamos registrados: ${listaPrestamos.size}")
+    println("\n=== LISTA DE PRESTAMOS REGISTRADOS ===")
+    for (p in listaPrestamos) {
+        println(
+            "Libro: ${p.titulo} | Usuario: ${p.tipoUsuario} | " +
+                    "Prestamo: ${p.fechaPrestamo.format(formato)} | " +
+                    "Entrega: ${p.fechaEntrega.format(formato)} | " +
+                    "Devolucion: ${p.fechaDevolucion.format(formato)} | " +
+                    "Estado: ${p.calcularEstado()}"
+        )
+    }
 }
