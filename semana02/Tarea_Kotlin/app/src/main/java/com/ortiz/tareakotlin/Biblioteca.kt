@@ -25,30 +25,37 @@ data class Prestamo(
 }
 
 fun main() {
+    val listaPrestamos = mutableListOf<Prestamo>()
+
     println("=== REGISTRO DE PRESTAMOS DE BIBLIOTECA ===")
     println("Las fechas deben ingresarse en formato dd/MM/yyyy (ejemplo: 15/03/2026)")
 
-    print("Titulo del libro: ")
-    val titulo = readLine() ?: ""
+    var continuar = true
+    while (continuar) {
+        println("\n--- Nuevo prestamo ---")
 
-    print("Tipo de usuario (estudiante/docente): ")
-    val tipoUsuario = readLine() ?: ""
+        print("Titulo del libro: ")
+        val titulo = readLine() ?: ""
 
-    print("Fecha de prestamo (dd/MM/yyyy): ")
-    val fechaPrestamo = LocalDate.parse(readLine(), formato)
+        print("Tipo de usuario (estudiante/docente): ")
+        val tipoUsuario = readLine() ?: ""
 
-    print("Fecha de entrega acordada (dd/MM/yyyy): ")
-    val fechaEntrega = LocalDate.parse(readLine(), formato)
+        print("Fecha de prestamo (dd/MM/yyyy): ")
+        val fechaPrestamo = LocalDate.parse(readLine(), formato)
 
-    print("Fecha de devolucion real (dd/MM/yyyy): ")
-    val fechaDevolucion = LocalDate.parse(readLine(), formato)
+        print("Fecha de entrega acordada (dd/MM/yyyy): ")
+        val fechaEntrega = LocalDate.parse(readLine(), formato)
 
-    val prestamo = Prestamo(titulo, tipoUsuario, fechaPrestamo, fechaEntrega, fechaDevolucion)
+        print("Fecha de devolucion real (dd/MM/yyyy): ")
+        val fechaDevolucion = LocalDate.parse(readLine(), formato)
 
-    println("\nPrestamo registrado:")
-    println("Titulo: ${prestamo.titulo}")
-    println("Usuario: ${prestamo.tipoUsuario}")
-    println("Fecha prestamo: ${prestamo.fechaPrestamo.format(formato)}")
-    println("Fecha entrega: ${prestamo.fechaEntrega.format(formato)}")
-    println("Fecha devolucion: ${prestamo.fechaDevolucion.format(formato)}")
+        val prestamo = Prestamo(titulo, tipoUsuario, fechaPrestamo, fechaEntrega, fechaDevolucion)
+        listaPrestamos.add(prestamo)
+
+        print("\nDesea registrar otro prestamo? (s/n): ")
+        val respuesta = readLine()?.lowercase() ?: "n"
+        continuar = respuesta == "s"
+    }
+
+    println("\nTotal de prestamos registrados: ${listaPrestamos.size}")
 }
