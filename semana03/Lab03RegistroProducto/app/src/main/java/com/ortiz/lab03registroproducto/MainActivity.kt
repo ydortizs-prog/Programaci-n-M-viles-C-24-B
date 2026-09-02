@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +30,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,6 +63,11 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
     var cantidad by remember { mutableStateOf("") }
 
     val listaProductos = remember { mutableStateListOf<Producto>() }
+
+    // Cálculo en tiempo real del valor total del inventario
+    val totalInventario = listaProductos.sumOf { prod ->
+        (prod.precio.toDoubleOrNull() ?: 0.0) * (prod.cantidad.toIntOrNull() ?: 0)
+    }
 
     Column(
         modifier = modifier
@@ -115,7 +123,7 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
             onClick = {
                 if (nombre.isNotBlank() && precio.isNotBlank() && cantidad.isNotBlank()) {
                     listaProductos.add(Producto(nombre, precio, cantidad))
-                    Toast.makeText(context, "Producto registrado", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Producto registrado correctamente", Toast.LENGTH_SHORT).show()
 
                     nombre = ""
                     precio = ""
@@ -131,34 +139,67 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Text(
-            text = "Productos Registrados:",
-            style = MaterialTheme.typography.titleMedium
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Productos Registrados:",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = "Total: S/ %.2f".format(totalInventario),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        LazyColumn {
-            items(listaProductos) { producto ->
-                TarjetaProducto(producto = producto)
+        if (listaProductos.isEmpty()) {
+            Text(
+                text = "No hay productos registrados aún.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.padding(top = 12.dp)
+            )
+        } else {
+            LazyColumn {
+                items(listaProductos) { producto ->
+                    TarjetaProducto(
+                        producto = producto,
+                        onEliminar = { listaProductos.remove(producto) }
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun TarjetaProducto(producto: Producto) {
+fun TarjetaProducto(producto: Producto, onEliminar: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(text = producto.nombre, style = MaterialTheme.typography.titleMedium)
-            Row {
-                Text(text = "Precio: S/ ${producto.precio}", modifier = Modifier.weight(1f))
-                Text(text = "Cantidad: ${producto.cantidad}")
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = producto.nombre, style = MaterialTheme.typography.titleMedium)
+                Row {
+                    Text(text = "Precio: S/ ${producto.precio}", modifier = Modifier.weight(1f))
+                    Text(text = "Cantidad: ${producto.cantidad}")
+                }
+            }
+            OutlinedButton(onClick = onEliminar) {
+                Text("Borrar", color = MaterialTheme.colorScheme.error)
             }
         }
     }
