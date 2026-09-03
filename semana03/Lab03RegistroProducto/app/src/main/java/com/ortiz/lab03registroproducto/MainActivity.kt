@@ -131,18 +131,21 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
         ) {
             Button(
                 onClick = {
-                    if (nombre.isNotBlank() && precio.isNotBlank() && cantidad.isNotBlank()) {
+                    val precioValido = precio.toDoubleOrNull()
+                    val cantidadValida = cantidad.toIntOrNull()
+
+                    if (nombre.isBlank() || precio.isBlank() || cantidad.isBlank()) {
+                        mensajeError = "Todos los campos son obligatorios"
+                    } else if (precioValido == null || cantidadValida == null) {
+                        mensajeError = "Precio y cantidad deben ser numeros validos"
+                    } else {
                         listaProductos.add(Producto(nombre, precio, cantidad))
                         Toast.makeText(context, "Producto registrado correctamente", Toast.LENGTH_SHORT).show()
 
-                        // Limpiar formulario y reiniciar error
                         nombre = ""
                         precio = ""
                         cantidad = ""
                         mensajeError = ""
-                    } else {
-                        // Muestra el mensaje en rojo en vez de Toast
-                        mensajeError = "Todos los campos son obligatorios"
                     }
                 },
                 modifier = Modifier.weight(1f)
