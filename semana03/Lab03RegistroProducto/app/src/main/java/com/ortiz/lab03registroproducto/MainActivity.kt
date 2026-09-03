@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
@@ -58,13 +59,17 @@ class MainActivity : ComponentActivity() {
 fun PantallaRegistro(modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
+    // Estados para los campos de texto
     var nombre by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
     var cantidad by remember { mutableStateOf("") }
 
+    // Estado para mostrar el mensaje de error en rojo
+    var mensajeError by remember { mutableStateOf("") }
+
+    // Lista de productos y cálculo del total
     val listaProductos = remember { mutableStateListOf<Producto>() }
 
-    // Cálculo en tiempo real del valor total del inventario
     val totalInventario = listaProductos.sumOf { prod ->
         (prod.precio.toDoubleOrNull() ?: 0.0) * (prod.cantidad.toIntOrNull() ?: 0)
     }
@@ -119,22 +124,54 @@ fun PantallaRegistro(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = {
-                if (nombre.isNotBlank() && precio.isNotBlank() && cantidad.isNotBlank()) {
-                    listaProductos.add(Producto(nombre, precio, cantidad))
-                    Toast.makeText(context, "Producto registrado correctamente", Toast.LENGTH_SHORT).show()
+        // Fila de Botones: 'Agregar producto' y 'Limpiar'
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Button(
+                onClick = {
+                    if (nombre.isNotBlank() && precio.isNotBlank() && cantidad.isNotBlank()) {
+                        listaProductos.add(Producto(nombre, precio, cantidad))
+                        Toast.makeText(context, "Producto registrado correctamente", Toast.LENGTH_SHORT).show()
 
+                        // Limpiar formulario y reiniciar error
+                        nombre = ""
+                        precio = ""
+                        cantidad = ""
+                        mensajeError = ""
+                    } else {
+                        // Muestra el mensaje en rojo en vez de Toast
+                        mensajeError = "Todos los campos son obligatorios"
+                    }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Agregar producto")
+            }
+
+            OutlinedButton(
+                onClick = {
+                    // Vacía los 3 campos sin tocar la lista ni el total
                     nombre = ""
                     precio = ""
                     cantidad = ""
-                } else {
-                    Toast.makeText(context, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Agregar producto")
+                    mensajeError = ""
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Limpiar")
+            }
+        }
+
+        // Mensaje de error en rojo debajo del botón
+        if (mensajeError.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = mensajeError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
 
         Spacer(modifier = Modifier.height(20.dp))
