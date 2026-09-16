@@ -20,7 +20,7 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
     var precioInput by remember { mutableStateOf("") }
     var cantidadInput by remember { mutableStateOf("") }
 
-    // Lógica de Cálculo de Totales (Commit 4)
+
     val subtotal = listaProductos.sumOf { it.precio * it.cantidad }
     val igv = subtotal * 0.18
     val total = subtotal + igv
@@ -176,11 +176,22 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                                         fontSize = 12.sp
                                     )
                                 }
-                                Text(
-                                    text = "S/ %.2f".format(producto.precio * producto.cantidad),
-                                    fontWeight = FontWeight.Bold,
-                                    color = purpleColor
-                                )
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "S/ %.2f".format(producto.precio * producto.cantidad),
+                                        fontWeight = FontWeight.Bold,
+                                        color = purpleColor,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    )
+
+                                    TextButton(onClick = { listaProductos.remove(producto) }) {
+                                        Text(
+                                            text = "🗑",
+                                            color = Color(0xFFB00020),
+                                            fontSize = 18.sp
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
