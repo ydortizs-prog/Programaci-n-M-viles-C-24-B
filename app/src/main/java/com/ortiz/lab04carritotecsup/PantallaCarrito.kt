@@ -20,7 +20,7 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
     var precioInput by remember { mutableStateOf("") }
     var cantidadInput by remember { mutableStateOf("") }
 
-    // Cálculos de Totales
+    // Lógica de Cálculo de Totales (Commit 4)
     val subtotal = listaProductos.sumOf { it.precio * it.cantidad }
     val igv = subtotal * 0.18
     val total = subtotal + igv
@@ -42,7 +42,6 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
             )
         },
         bottomBar = {
-            // Panel Inferior con Desglose de Totales
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFF3EDF7)),
