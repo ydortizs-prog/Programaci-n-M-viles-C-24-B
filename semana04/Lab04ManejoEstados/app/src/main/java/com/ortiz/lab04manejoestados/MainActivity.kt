@@ -67,3 +67,34 @@ fun TemperatureDisplay(modifier: Modifier = Modifier) {
 
     }
 }
+@Composable
+fun ListaTareasScreen(modifier: Modifier = Modifier) {
+    var tareas by remember { mutableStateOf(listOf<Tarea>()) }
+    var textoNuevaTarea by remember { mutableStateOf("") }
+
+    fun agregarTarea() {
+        if (textoNuevaTarea.isNotBlank()) {
+            tareas = tareas + Tarea(texto = textoNuevaTarea)
+            textoNuevaTarea = ""
+        }
+    }
+
+    fun eliminarTarea(tarea: Tarea) {
+        tareas = tareas.filter { it != tarea }
+    }
+
+    fun toggleCompletada(tarea: Tarea) {
+        tareas = tareas.map {
+            if (it == tarea) it.copy(completada = !it.completada) else it
+        }
+    }
+
+    Column(modifier = modifier.padding(16.dp)) {
+        Text(
+            text = "Mis Tareas (${tareas.size})",
+            fontSize = 22.sp
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+    }
+}
