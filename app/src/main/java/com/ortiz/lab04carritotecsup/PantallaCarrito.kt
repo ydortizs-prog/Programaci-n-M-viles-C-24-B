@@ -20,13 +20,60 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
     var precioInput by remember { mutableStateOf("") }
     var cantidadInput by remember { mutableStateOf("") }
 
+    // Estados para el Reto 1: AlertDialog de confirmación
+    var productoAEliminar by remember { mutableStateOf<Producto?>(null) }
+    var mostrarDialogo by remember { mutableStateOf(false) }
 
+    // Lógica de Totales
     val subtotal = listaProductos.sumOf { it.precio * it.cantidad }
-    val igv = subtotal * 0.18
-    val total = subtotal + igv
+
+    // Reto 2: Descuento dinámico usando 'when'
+    val porcentajeDescuento = when {
+        subtotal > 5000 -> 0.10
+        subtotal > 3000 -> 0.05
+        else -> 0.0
+    }
+    val montoDescuento = subtotal * porcentajeDescuento
+    val subtotalConDescuento = subtotal - montoDescuento
+
+    val igv = subtotalConDescuento * 0.18
+    val total = subtotalConDescuento + igv
     val totalCantidadProductos = listaProductos.sumOf { it.cantidad }
 
     val purpleColor = Color(0xFF6200EE)
+
+    // Modal de Confirmación (Reto 1)
+    if (mostrarDialogo && productoAEliminar != null) {
+        AlertDialog(
+            onDismissRequest = {
+                mostrarDialogo = false
+                productoAEliminar = null
+            },
+            title = { Text(text = "¿Eliminar este producto?", fontWeight = FontWeight.Bold) },
+            text = { Text(text = "¿Estás seguro de que deseas eliminar '${productoAEliminar?.nombre}' del carrito?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        productoAEliminar?.let { listaProductos.remove(it) }
+                        mostrarDialogo = false
+                        productoAEliminar = null
+                    }
+                ) {
+                    Text("Eliminar", color = Color(0xFFB00020), fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        mostrarDialogo = false
+                        productoAEliminar = null
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -63,6 +110,24 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                     ) {
                         Text(text = "Subtotal", color = Color.DarkGray)
                         Text(text = "S/ %.2f".format(subtotal), color = Color.DarkGray)
+                    }
+
+                    if (porcentajeDescuento > 0) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Descuento (${(porcentajeDescuento * 100).toInt()}%)",
+                                color = Color(0xFF388E3C),
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = "-S/ %.2f".format(montoDescuento),
+                                color = Color(0xFF388E3C),
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     }
 
                     Row(
@@ -193,7 +258,10 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                                         color = purpleColor,
                                         modifier = Modifier.padding(end = 8.dp)
                                     )
-                                    TextButton(onClick = { listaProductos.remove(producto) }) {
+                                    TextButton(onClick = {
+                                        productoAEliminar = producto
+                                        mostrarDialogo = true
+                                    }) {
                                         Text(text = "🗑", color = Color(0xFFB00020), fontSize = 18.sp)
                                     }
                                 }
