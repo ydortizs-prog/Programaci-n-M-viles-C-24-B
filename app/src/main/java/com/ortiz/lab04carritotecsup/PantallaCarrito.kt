@@ -20,6 +20,12 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
     var precioInput by remember { mutableStateOf("") }
     var cantidadInput by remember { mutableStateOf("") }
 
+    // Cálculos de Totales
+    val subtotal = listaProductos.sumOf { it.precio * it.cantidad }
+    val igv = subtotal * 0.18
+    val total = subtotal + igv
+    val totalCantidadProductos = listaProductos.sumOf { it.cantidad }
+
     val purpleColor = Color(0xFF6200EE)
 
     Scaffold(
@@ -34,6 +40,49 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = purpleColor)
             )
+        },
+        bottomBar = {
+            // Panel Inferior con Desglose de Totales
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFF3EDF7)),
+                shape = androidx.compose.ui.graphics.RectangleShape
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(text = "Productos: $totalCantidadProductos", color = Color.Gray, fontSize = 12.sp)
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Subtotal", color = Color.DarkGray)
+                        Text(text = "S/ %.2f".format(subtotal), color = Color.DarkGray)
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "IGV (18%)", color = Color.DarkGray)
+                        Text(text = "S/ %.2f".format(igv), color = Color.DarkGray)
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "TOTAL", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text(
+                            text = "S/ %.2f".format(total),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = purpleColor
+                        )
+                    }
+                }
+            }
         }
     ) { innerPadding ->
         Column(
@@ -99,17 +148,8 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Tu carrito está vacío",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = Color.Gray
-                        )
-                        Text(
-                            text = "Agrega tu primer producto",
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
+                        Text(text = "Tu carrito está vacío", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.Gray)
+                        Text(text = "Agrega tu primer producto", color = Color.Gray, fontSize = 14.sp)
                     }
                 }
             } else {
@@ -118,16 +158,30 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 4.dp)
+                                .padding(vertical = 4.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            elevation = CardDefaults.cardElevation(2.dp)
                         ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(12.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(text = producto.nombre)
-                                Text(text = "S/ ${producto.precio}")
+                                Column {
+                                    Text(text = producto.nombre, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    Text(
+                                        text = "S/ %.2f x %d".format(producto.precio, producto.cantidad),
+                                        color = Color.Gray,
+                                        fontSize = 12.sp
+                                    )
+                                }
+                                Text(
+                                    text = "S/ %.2f".format(producto.precio * producto.cantidad),
+                                    fontWeight = FontWeight.Bold,
+                                    color = purpleColor
+                                )
                             }
                         }
                     }
