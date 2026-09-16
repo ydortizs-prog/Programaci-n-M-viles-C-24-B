@@ -38,6 +38,13 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                         fontWeight = FontWeight.Bold
                     )
                 },
+                actions = {
+                    if (listaProductos.isNotEmpty()) {
+                        TextButton(onClick = { listaProductos.clear() }) {
+                            Text("VACIAR", color = Color.White, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = purpleColor)
             )
         },
@@ -48,7 +55,7 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                 shape = androidx.compose.ui.graphics.RectangleShape
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Productos: $totalCantidadProductos", color = Color.Gray, fontSize = 12.sp)
+                    Text(text = "Productos en total: $totalCantidadProductos", color = Color.Gray, fontSize = 12.sp)
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -94,7 +101,8 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                 value = nombreInput,
                 onValueChange = { nombreInput = it },
                 label = { Text("Nombre del producto") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -107,14 +115,16 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                     value = precioInput,
                     onValueChange = { precioInput = it },
                     label = { Text("Precio (S/)") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    singleLine = true
                 )
 
                 OutlinedTextField(
                     value = cantidadInput,
                     onValueChange = { cantidadInput = it },
                     label = { Text("Cantidad") },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    singleLine = true
                 )
             }
 
@@ -134,7 +144,7 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = purpleColor)
             ) {
-                Text("AGREGAR", fontWeight = FontWeight.Bold)
+                Text("AGREGAR AL CARRITO", fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -171,7 +181,7 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                                 Column {
                                     Text(text = producto.nombre, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                     Text(
-                                        text = "S/ %.2f x %d".format(producto.precio, producto.cantidad),
+                                        text = "S/ %.2f x %d unidades".format(producto.precio, producto.cantidad),
                                         color = Color.Gray,
                                         fontSize = 12.sp
                                     )
@@ -183,13 +193,8 @@ fun PantallaCarrito(modifier: Modifier = Modifier) {
                                         color = purpleColor,
                                         modifier = Modifier.padding(end = 8.dp)
                                     )
-
                                     TextButton(onClick = { listaProductos.remove(producto) }) {
-                                        Text(
-                                            text = "🗑",
-                                            color = Color(0xFFB00020),
-                                            fontSize = 18.sp
-                                        )
+                                        Text(text = "🗑", color = Color(0xFFB00020), fontSize = 18.sp)
                                     }
                                 }
                             }
