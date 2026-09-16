@@ -5,6 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +25,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             Lab04ManejoEstadosTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    TemperatureDisplay(modifier = Modifier.padding(innerPadding))
+                    Column(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        TemperatureDisplay()
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                        ListaTareasScreen()
+                    }
                 }
             }
         }
@@ -34,10 +46,9 @@ fun TemperatureDisplay(modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Temperatura: $temperatura°C",
@@ -64,9 +75,9 @@ fun TemperatureDisplay(modifier: Modifier = Modifier) {
                 Text("Resetear")
             }
         }
-
     }
 }
+
 @Composable
 fun ListaTareasScreen(modifier: Modifier = Modifier) {
     var tareas by remember { mutableStateOf(listOf<Tarea>()) }
@@ -89,12 +100,57 @@ fun ListaTareasScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    Column(modifier = modifier.padding(16.dp)) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         Text(
             text = "Mis Tareas (${tareas.size})",
             fontSize = 22.sp
         )
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = textoNuevaTarea,
+                onValueChange = { textoNuevaTarea = it },
+                label = { Text("Nueva tarea") },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = { agregarTarea() }) {
+                Text("Agregar")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn(
+            modifier = Modifier.height(300.dp)
+        ) {
+            items(tareas) { tarea ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = tarea.completada,
+                        onCheckedChange = { toggleCompletada(tarea) }
+                    )
+                    Text(
+                        text = tarea.texto,
+                        modifier = Modifier.weight(1f),
+                        color = if (tarea.completada) Color.Gray else Color.Black
+                    )
+                    TextButton(onClick = { eliminarTarea(tarea) }) {
+                        Text("Eliminar")
+                    }
+                }
+            }
+        }
     }
 }
