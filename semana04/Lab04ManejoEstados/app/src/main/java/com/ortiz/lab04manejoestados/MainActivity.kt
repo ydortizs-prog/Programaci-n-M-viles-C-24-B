@@ -64,5 +64,6 @@ fun TemperatureDisplay(modifier: Modifier = Modifier) {
                 Text("Resetear")
             }
         }
+
     }
 }
