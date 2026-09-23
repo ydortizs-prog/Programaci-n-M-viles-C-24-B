@@ -1,23 +1,33 @@
 package com.ortiz.clinicasalud.ui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ortiz.clinicasalud.navigation.Screen
+import com.ortiz.clinicasalud.ui.theme.PurpleContainer
+import com.ortiz.clinicasalud.ui.theme.PurplePrimary
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,36 +37,87 @@ fun MainScreen() {
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
 
+    // Obtener la ruta actual para saber qué opción del drawer marcar como seleccionada
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Clínica Salud+",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp)
-                )
+                // Header del menú lateral con datos del paciente (Maqueta)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Surface(
+                            modifier = Modifier.size(48.dp),
+                            shape = CircleShape,
+                            color = PurpleContainer
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = "JP",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = PurplePrimary
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column {
+                            Text(
+                                text = "Juan Pérez",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = "Paciente",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
                 HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Opción Inicio
+                val isHomeSelected = currentRoute == Screen.Home.route
                 NavigationDrawerItem(
-                    icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                    icon = {
+                        Icon(
+                            imageVector = if (isHomeSelected) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
+                            contentDescription = null
+                        )
+                    },
                     label = { Text("Inicio") },
-                    selected = false,
+                    selected = isHomeSelected,
                     onClick = {
                         scope.launch { drawerState.close() }
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Home.route) { inclusive = true }
                         }
-                    }
+                    },
+                    modifier = Modifier.padding(horizontal = 12.dp)
                 )
+
+                // Opción Mis Citas
+                val isAppointmentsSelected = currentRoute == Screen.MyAppointments.route
                 NavigationDrawerItem(
-                    icon = { Icon(Icons.Default.DateRange, contentDescription = null) },
+                    icon = {
+                        Icon(
+                            imageVector = if (isAppointmentsSelected) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
+                            contentDescription = null
+                        )
+                    },
                     label = { Text("Mis citas") },
-                    selected = false,
+                    selected = isAppointmentsSelected,
                     onClick = {
                         scope.launch { drawerState.close() }
                         navController.navigate(Screen.MyAppointments.route)
-                    }
+                    },
+                    modifier = Modifier.padding(horizontal = 12.dp)
                 )
             }
         }
