@@ -29,27 +29,28 @@ fun ClassDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detalle de clase") },
+                title = { Text("Detalle de clase", color = Color.Black) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás", tint = Color.Black)
                     }
                 }
             )
         }
-    ) { padding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(padding)
                 .fillMaxSize()
+                .padding(innerPadding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(140.dp)
+                        .height(180.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(GreenContainer),
                     contentAlignment = Alignment.Center
@@ -57,13 +58,23 @@ fun ClassDetailScreen(
                     Icon(
                         imageVector = Icons.Default.FitnessCenter,
                         contentDescription = null,
-                        modifier = Modifier.size(56.dp),
-                        tint = GreenPrimary
+                        tint = GreenPrimary,
+                        modifier = Modifier.size(64.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(fitnessClass.name, style = MaterialTheme.typography.headlineSmall)
+                Spacer(modifier = Modifier.height(24.dp))
+
+
+                Text(
+                    text = fitnessClass.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.Black
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+
                 Text(
                     text = "${fitnessClass.time} · ${fitnessClass.room} · ${fitnessClass.duration}",
                     style = MaterialTheme.typography.bodyMedium,
@@ -71,22 +82,34 @@ fun ClassDetailScreen(
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(fitnessClass.description, style = MaterialTheme.typography.bodyLarge)
 
-                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = fitnessClass.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color(0xFF212121)
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+
                 Text(
                     text = "${fitnessClass.availableSpots} de ${fitnessClass.totalSpots} cupos disponibles",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
             }
 
+
             Button(
                 onClick = { onReserveClick(fitnessClass.id) },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = GreenPrimary)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = GreenPrimary),
+                shape = RoundedCornerShape(25.dp)
             ) {
-                Text("Reservar cupo", color = Color.White)
+                Text("Reservar cupo", color = Color.White, style = MaterialTheme.typography.titleMedium)
             }
         }
     }

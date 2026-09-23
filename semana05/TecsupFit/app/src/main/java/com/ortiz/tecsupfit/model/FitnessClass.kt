@@ -9,7 +9,14 @@ data class FitnessClass(
     val description: String,
     val availableSpots: Int,
     val totalSpots: Int,
-    val filterType: String
+    val filterType: String // "Hoy" o "Esta semana"
+)
+
+data class Reservation(
+    val id: String,
+    val className: String,
+    val time: String,
+    val status: String // "Confirmada" o "Completada"
 )
 
 val sampleClasses = listOf(
@@ -41,21 +48,24 @@ val sampleClasses = listOf(
         time = "7:30 pm",
         room = "Sala 3",
         duration = "45 min",
-        description = "Ejercicio cardiovascular sobre bicicleta estática con intervalos de ritmo.",
-        availableSpots = 3,
+        description = "Entrenamiento cardiovascular sobre bicicleta estática.",
+        availableSpots = 10,
         totalSpots = 20,
         filterType = "Esta semana"
     )
 )
 
-data class Reservation(
-    val id: String,
-    val className: String,
-    val schedule: String,
-    val status: String
-)
-
 val sampleReservations = listOf(
-    Reservation("r1", "Cross Training", "Hoy, 6:00 pm", "Confirmada"),
-    Reservation("r2", "Yoga funcional", "Ayer, 7:00 am", "Completada")
+    Reservation(
+        id = "r1",
+        className = "Cross Training",
+        time = "Hoy, 6:00 pm",
+        status = "Confirmada"
+    ),
+    Reservation(
+        id = "r2",
+        className = "Yoga funcional",
+        time = "Ayer, 7:00 am",
+        status = "Completada"
+    )
 )
