@@ -18,6 +18,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -37,7 +38,7 @@ fun MainScreen() {
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
 
-    // Obtener la ruta actual para saber qué opción del drawer marcar como seleccionada
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -45,7 +46,7 @@ fun MainScreen() {
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                // Header del menú lateral con datos del paciente (Maqueta)
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -82,7 +83,7 @@ fun MainScreen() {
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Opción Inicio
+
                 val isHomeSelected = currentRoute == Screen.Home.route
                 NavigationDrawerItem(
                     icon = {
@@ -102,7 +103,7 @@ fun MainScreen() {
                     modifier = Modifier.padding(horizontal = 12.dp)
                 )
 
-                // Opción Mis Citas
+
                 val isAppointmentsSelected = currentRoute == Screen.MyAppointments.route
                 NavigationDrawerItem(
                     icon = {
@@ -125,14 +126,19 @@ fun MainScreen() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Clínica Salud+") },
+                    title = { Text("Clínica Salud+", color = Color.White) },
                     navigationIcon = {
-                        IconButton(onClick = {
-                            scope.launch { drawerState.open() }
-                        }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menú")
+                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                            Icon(
+                                Icons.Default.Menu,
+                                contentDescription = "Menú",
+                                tint = Color.White
+                            )
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = PurplePrimary
+                    )
                 )
             }
         ) { innerPadding ->
