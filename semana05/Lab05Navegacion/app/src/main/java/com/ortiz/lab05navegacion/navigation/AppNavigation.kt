@@ -6,15 +6,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.ortiz.lab05navegacion.screens.DetailScreen
-import com.ortiz.lab05navegacion.screens.HomeScreen
-import com.ortiz.lab05navegacion.screens.ListScreen
-import com.ortiz.lab05navegacion.screens.ProfileScreen
+import com.ortiz.lab05navegacion.screens.theme.DetailScreen
+import com.ortiz.lab05navegacion.screens.theme.HomeScreen
+import com.ortiz.lab05navegacion.screens.theme.ListScreen
+import com.ortiz.lab05navegacion.screens.theme.ProfileScreen
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route
@@ -33,7 +32,7 @@ fun AppNavigation() {
             arguments = listOf(navArgument("itemId") { type = NavType.IntType })
         ) { backStackEntry ->
             val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
-            DetailScreen(itemId = itemId, navController = navController)
+            DetailScreen(navController = navController, itemId = itemId)
         }
     }
 }
