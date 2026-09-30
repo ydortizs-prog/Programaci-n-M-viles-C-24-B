@@ -2,6 +2,8 @@ package com.ortiz.tecsup_store
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,7 +17,7 @@ fun TarjetaProducto(
     onEliminar: () -> Unit
 ) {
     val importeTotal = producto.precio * producto.cantidad
-    var expanded by remember { mutableStateOf(false) } // Estado del menu
+    var expanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -47,12 +49,46 @@ fun TarjetaProducto(
                 modifier = Modifier.padding(end = 8.dp)
             )
 
-
             Box {
                 IconButton(onClick = { expanded = true }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "Opciones"
+                    )
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Ver detalles") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = null
+                            )
+                        },
+                        onClick = { expanded = false }
+                    )
+                    HorizontalDivider()
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "Eliminar",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        },
+                        onClick = {
+                            expanded = false
+                            onEliminar()
+                        }
                     )
                 }
             }
