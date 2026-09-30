@@ -2,9 +2,9 @@ package com.ortiz.tecsup_store
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -15,6 +15,7 @@ fun TarjetaProducto(
     onEliminar: () -> Unit
 ) {
     val importeTotal = producto.precio * producto.cantidad
+    var expanded by remember { mutableStateOf(false) } // Estado del menu
 
     Card(
         modifier = Modifier
@@ -46,12 +47,14 @@ fun TarjetaProducto(
                 modifier = Modifier.padding(end = 8.dp)
             )
 
-            IconButton(onClick = onEliminar) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Eliminar",
-                    tint = MaterialTheme.colorScheme.error
-                )
+
+            Box {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Opciones"
+                    )
+                }
             }
         }
     }
