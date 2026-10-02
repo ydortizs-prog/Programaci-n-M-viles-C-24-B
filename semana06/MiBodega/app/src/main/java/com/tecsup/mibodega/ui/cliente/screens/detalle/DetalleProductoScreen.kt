@@ -1,5 +1,6 @@
 package com.tecsup.mibodega.ui.cliente.screens.detalle
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -29,6 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,10 +44,8 @@ import com.tecsup.mibodega.ui.theme.RojoPrecio
 import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
- * Pantalla 4: Detalle del producto (mockup "Cliente").
- * Guarda su propia cantidad seleccionada (remember) mientras el usuario
- * decide cuánto quiere; solo al tocar "Agregar al carrito" le avisa
- * a ClienteApp cuánto agregar.
+ * Pantalla 4: Detalle del producto de mibdega (mockup "Cliente").
+ * Muestra la imagen real del producto encajada sin recortes o la canastilla por defecto.
  */
 @Composable
 fun DetalleProductoScreen(
@@ -62,7 +62,7 @@ fun DetalleProductoScreen(
     ) {
         EncabezadoDetalle(onVolver = onVolver)
 
-        ImagenProducto()
+        ImagenProducto(producto = producto)
 
         Column(
             modifier = Modifier
@@ -131,9 +131,7 @@ private fun EncabezadoDetalle(onVolver: () -> Unit) {
 }
 
 @Composable
-private fun ImagenProducto() {
-    // Placeholder de imagen: reemplázalo por Image(painterResource(...))
-    // cuando tengan la foto real de cada producto.
+private fun ImagenProducto(producto: Producto) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,12 +139,23 @@ private fun ImagenProducto() {
             .background(GrisClaro),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = Icons.Default.ShoppingBasket,
-            contentDescription = null,
-            tint = VerdeBodega,
-            modifier = Modifier.size(80.dp)
-        )
+        if (producto.imagenResId != null) {
+            Image(
+                painter = painterResource(id = producto.imagenResId),
+                contentDescription = producto.nombre,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.ShoppingBasket,
+                contentDescription = producto.nombre,
+                tint = VerdeBodega,
+                modifier = Modifier.size(80.dp)
+            )
+        }
     }
 }
 
@@ -155,10 +164,9 @@ private fun ImagenProducto() {
 private fun DetalleProductoPreview() {
     BodegaTheme {
         DetalleProductoScreen(
-            producto = listaProductosFake.first { it.nombre == "Coca-Cola Original" },
+            producto = listaProductosFake.first { it.nombre == "Aceite Primor" },
             onVolver = {},
             onAgregarAlCarrito = { _, _ -> }
         )
     }
 }
-

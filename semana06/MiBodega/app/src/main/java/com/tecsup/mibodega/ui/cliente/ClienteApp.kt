@@ -2,7 +2,12 @@ package com.tecsup.mibodega.ui.cliente
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,9 +27,12 @@ import com.tecsup.mibodega.ui.cliente.modelo.Producto
 import com.tecsup.mibodega.ui.cliente.modelo.listaProductosFake
 import com.tecsup.mibodega.ui.cliente.screens.bienvenida.BienvenidaScreen
 import com.tecsup.mibodega.ui.cliente.screens.carrito.CarritoScreen
+import com.tecsup.mibodega.ui.cliente.screens.categorias.CategoriasScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
+import com.tecsup.mibodega.ui.componentes.BarraNavegacionInferior
+import com.tecsup.mibodega.ui.theme.AzulTexto
 
 private object Rutas {
     const val BIENVENIDA = "bienvenida"
@@ -80,28 +90,32 @@ fun ClienteApp() {
                 onAgregarProducto = { producto ->
                     carrito = agregarOSumarProducto(carrito, producto, 1)
                 },
-                onIrInicio = {
+                bottomBar = {
+                    BarraNavegacionInferior(navController = navController)
+                }
+            )
+        }
+
+        // Pantalla de Categorías completa con Grid de 2 columnas
+        composable(Rutas.CATEGORIAS) {
+            CategoriasScreen(
+                onCategoriaClick = {
                     navController.navigate(Rutas.INICIO) {
                         popUpTo(Rutas.INICIO) { inclusive = true }
                     }
                 },
-                onIrCategorias = { navController.navigate(Rutas.CATEGORIAS) },
-                onIrPedidos = { navController.navigate(Rutas.PEDIDOS) },
-                onIrPerfil = { navController.navigate(Rutas.PERFIL) }
+                bottomBar = {
+                    BarraNavegacionInferior(navController = navController)
+                }
             )
         }
 
-        // Rutas secundarias para la barra inferior
-        composable(Rutas.CATEGORIAS) {
-            PantallaVista("Pantalla de Categorías")
-        }
-
         composable(Rutas.PEDIDOS) {
-            PantallaVista("Pantalla de Pedidos")
+            PantallaSeccion("Mis Pedidos", navController)
         }
 
         composable(Rutas.PERFIL) {
-            PantallaVista("Pantalla de Perfil")
+            PantallaSeccion("Mi Perfil", navController)
         }
 
         composable(
@@ -148,13 +162,34 @@ fun ClienteApp() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PantallaVista(titulo: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = titulo)
+private fun PantallaSeccion(
+    titulo: String,
+    navController: NavController
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(titulo, fontWeight = FontWeight.Bold) }
+            )
+        },
+        bottomBar = {
+            BarraNavegacionInferior(navController = navController)
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Pantalla de $titulo",
+                style = MaterialTheme.typography.titleLarge,
+                color = AzulTexto
+            )
+        }
     }
 }
 

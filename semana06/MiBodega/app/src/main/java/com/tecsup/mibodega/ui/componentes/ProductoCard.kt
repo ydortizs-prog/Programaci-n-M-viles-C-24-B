@@ -1,12 +1,13 @@
 package com.tecsup.mibodega.ui.componentes
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,8 +38,7 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
  * Tarjeta de producto usada en el grid de Inicio.
- * Solo muestra datos y avisa cuando la tocan o cuando tocan "+";
- * no sabe nada de navegación ni del carrito.
+ * Muestra la imagen real si está presente o la canastilla por defecto.
  */
 @Composable
 fun ProductoCard(
@@ -52,21 +55,31 @@ fun ProductoCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
-            // Placeholder de imagen: reemplázalo por Image(painterResource(...))
-            // cuando tengan las fotos reales de cada producto.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.3f)
-                    .background(GrisClaro, RoundedCornerShape(10.dp)),
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(GrisClaro),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.ShoppingBasket,
-                    contentDescription = producto.nombre,
-                    tint = VerdeBodega,
-                    modifier = Modifier.size(36.dp)
-                )
+                if (producto.imagenResId != null) {
+                    Image(
+                        painter = painterResource(id = producto.imagenResId),
+                        contentDescription = producto.nombre,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(6.dp)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingBasket,
+                        contentDescription = producto.nombre,
+                        tint = VerdeBodega,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
             }
 
             Spacer(Modifier.height(8.dp))
@@ -106,4 +119,3 @@ fun ProductoCard(
         }
     }
 }
-
