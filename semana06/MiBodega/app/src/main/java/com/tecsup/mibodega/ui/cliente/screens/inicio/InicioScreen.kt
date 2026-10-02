@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -97,7 +98,6 @@ fun InicioScreen(
         },
         bottomBar = {
             BarraInferior(
-                indiceSeleccionado = 0,
                 onIrInicio = onIrInicio,
                 onIrCategorias = onIrCategorias,
                 onIrPedidos = onIrPedidos,
@@ -188,12 +188,12 @@ private fun ChipCategoria(
 
 @Composable
 private fun BarraInferior(
-    indiceSeleccionado: Int,
     onIrInicio: () -> Unit,
     onIrCategorias: () -> Unit,
     onIrPedidos: () -> Unit,
     onIrPerfil: () -> Unit
 ) {
+    var seleccionado by remember { mutableIntStateOf(0) }
     val items = listOf(
         Triple("Inicio", Icons.Default.Home, onIrInicio),
         Triple("Categorías", Icons.Default.List, onIrCategorias),
@@ -204,11 +204,10 @@ private fun BarraInferior(
     NavigationBar {
         items.forEachIndexed { indice, (etiqueta, icono, accion) ->
             NavigationBarItem(
-                selected = indiceSeleccionado == indice,
+                selected = seleccionado == indice,
                 onClick = {
-                    if (indiceSeleccionado != indice) {
-                        accion()
-                    }
+                    seleccionado = indice
+                    accion()
                 },
                 icon = { Icon(icono, contentDescription = etiqueta) },
                 label = { Text(etiqueta) },
