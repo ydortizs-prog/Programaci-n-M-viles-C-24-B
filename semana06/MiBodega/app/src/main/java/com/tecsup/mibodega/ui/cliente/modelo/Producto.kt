@@ -1,5 +1,6 @@
 package com.tecsup.mibodega.ui.cliente.modelo
 
+//Producto
 data class Producto(
     val id: Int,
     val nombre: String,
