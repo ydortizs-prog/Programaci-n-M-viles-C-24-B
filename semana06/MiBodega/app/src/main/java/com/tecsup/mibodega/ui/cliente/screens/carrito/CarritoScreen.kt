@@ -48,7 +48,7 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 private const val COSTO_DELIVERY = 4.00
 
 /**
- * Pantalla 5: Mi carrito (mockup "Cliente").
+ * Pantalla 5: Mi carrito (mockup "Clientes").
  * Muestra la lista de productos agregados con sus respectivas imágenes reales o fallback.
  */
 @Composable
