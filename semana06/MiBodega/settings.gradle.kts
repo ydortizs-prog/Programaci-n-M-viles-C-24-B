@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TECSUP_Store"
+rootProject.name = "MiBodega"
 include(":app")
