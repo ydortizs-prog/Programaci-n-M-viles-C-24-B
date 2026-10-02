@@ -43,6 +43,8 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
  * Guarda su propio estado de formulario (remember) porque solo esta
  * pantalla lo necesita. Al enviar, entrega los datos ya listos.
  */
+
+// Registro
 @Composable
 fun RegistroScreen(
     onVolver: () -> Unit,
