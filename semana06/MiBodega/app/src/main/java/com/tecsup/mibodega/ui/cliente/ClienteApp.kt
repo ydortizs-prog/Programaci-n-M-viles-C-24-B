@@ -1,22 +1,10 @@
 package com.tecsup.mibodega.ui.cliente
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,19 +18,15 @@ import com.tecsup.mibodega.ui.cliente.screens.carrito.CarritoScreen
 import com.tecsup.mibodega.ui.cliente.screens.categorias.CategoriasScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
+import com.tecsup.mibodega.ui.cliente.screens.pedidos.PedidosScreen
+import com.tecsup.mibodega.ui.cliente.screens.perfil.PerfilScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
 import com.tecsup.mibodega.ui.componentes.BarraNavegacionInferior
-import com.tecsup.mibodega.ui.theme.AzulTexto
+import com.tecsup.mibodega.ui.componentes.OpcionNavegacion
 
 private object Rutas {
-    const val BIENVENIDA = "bienvenida"
-    const val REGISTRO = "registro"
-    const val INICIO = "inicio"
     const val DETALLE = "detalle/{productoId}"
     const val CARRITO = "carrito"
-    const val CATEGORIAS = "categorias"
-    const val PEDIDOS = "pedidos"
-    const val PERFIL = "perfil"
 
     fun detalle(productoId: Int) = "detalle/$productoId"
 }
@@ -55,32 +39,38 @@ fun ClienteApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Rutas.BIENVENIDA
+        startDestination = OpcionNavegacion.Bienvenida.ruta,
     ) {
-        composable(Rutas.BIENVENIDA) {
+        // Pantalla de Bienvenida (Punto de entrada obligatorio)
+        composable(OpcionNavegacion.Bienvenida.ruta) {
             BienvenidaScreen(
-                onRegistrarse = { navController.navigate(Rutas.REGISTRO) },
+                onRegistrarse = {
+                    navController.navigate(OpcionNavegacion.Registro.ruta)
+                },
                 onIniciarSesion = {
-                    navController.navigate(Rutas.INICIO) {
-                        popUpTo(Rutas.BIENVENIDA) { inclusive = true }
+                    // Ingreso directo a Inicio descartando la pantalla de bienvenida
+                    navController.navigate(OpcionNavegacion.Inicio.ruta) {
+                        popUpTo(OpcionNavegacion.Bienvenida.ruta) { inclusive = true }
                     }
                 },
-                onTerminos = { }
+                onTerminos = { },
             )
         }
 
-        composable(Rutas.REGISTRO) {
+        // Pantalla de Registro
+        composable(OpcionNavegacion.Registro.ruta) {
             RegistroScreen(
                 onVolver = { navController.popBackStack() },
                 onCrearCuenta = { _, _, _, _ ->
-                    navController.navigate(Rutas.INICIO) {
-                        popUpTo(Rutas.BIENVENIDA) { inclusive = true }
+                    navController.navigate(OpcionNavegacion.Inicio.ruta) {
+                        popUpTo(OpcionNavegacion.Bienvenida.ruta) { inclusive = true }
                     }
-                }
+                },
             )
         }
 
-        composable(Rutas.INICIO) {
+        // Pantalla Principal (Inicio)
+        composable(OpcionNavegacion.Inicio.ruta) {
             InicioScreen(
                 cantidadCarrito = carrito.sumOf { it.cantidad },
                 onVerCarrito = { navController.navigate(Rutas.CARRITO) },
@@ -92,35 +82,46 @@ fun ClienteApp() {
                 },
                 bottomBar = {
                     BarraNavegacionInferior(navController = navController)
-                }
+                },
             )
         }
 
-        // Pantalla de Categorías completa con Grid de 2 columnas
-        composable(Rutas.CATEGORIAS) {
+        // Pantalla de Categorías
+        composable(OpcionNavegacion.Categorias.ruta) {
             CategoriasScreen(
                 onCategoriaClick = {
-                    navController.navigate(Rutas.INICIO) {
-                        popUpTo(Rutas.INICIO) { inclusive = true }
+                    navController.navigate(OpcionNavegacion.Inicio.ruta) {
+                        popUpTo(OpcionNavegacion.Inicio.ruta) { inclusive = true }
                     }
                 },
                 bottomBar = {
                     BarraNavegacionInferior(navController = navController)
-                }
+                },
             )
         }
 
-        composable(Rutas.PEDIDOS) {
-            PantallaSeccion("Mis Pedidos", navController)
+        // Pantalla de Mis Pedidos
+        composable(OpcionNavegacion.Pedidos.ruta) {
+            PedidosScreen(
+                bottomBar = {
+                    BarraNavegacionInferior(navController = navController)
+                },
+            )
         }
 
-        composable(Rutas.PERFIL) {
-            PantallaSeccion("Mi Perfil", navController)
+        // Pantalla de Mi Perfil
+        composable(OpcionNavegacion.Perfil.ruta) {
+            PerfilScreen(
+                bottomBar = {
+                    BarraNavegacionInferior(navController = navController)
+                },
+            )
         }
 
+        // Detalle de Producto
         composable(
             route = Rutas.DETALLE,
-            arguments = listOf(navArgument("productoId") { type = NavType.IntType })
+            arguments = listOf(navArgument("productoId") { type = NavType.IntType }),
         ) { backStackEntry ->
             val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
             val producto = listaProductosFake.first { it.id == productoId }
@@ -131,10 +132,11 @@ fun ClienteApp() {
                 onAgregarAlCarrito = { productoSeleccionado, cantidad ->
                     carrito = agregarOSumarProducto(carrito, productoSeleccionado, cantidad)
                     navController.popBackStack()
-                }
+                },
             )
         }
 
+        // Carrito de compras
         composable(Rutas.CARRITO) {
             CarritoScreen(
                 carrito = carrito,
@@ -156,38 +158,7 @@ fun ClienteApp() {
                 onEliminar = { producto ->
                     carrito = carrito.filterNot { it.producto.id == producto.id }
                 },
-                onContinuarPedido = { }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PantallaSeccion(
-    titulo: String,
-    navController: NavController
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(titulo, fontWeight = FontWeight.Bold) }
-            )
-        },
-        bottomBar = {
-            BarraNavegacionInferior(navController = navController)
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Pantalla de $titulo",
-                style = MaterialTheme.typography.titleLarge,
-                color = AzulTexto
+                onContinuarPedido = { },
             )
         }
     }
@@ -196,7 +167,7 @@ private fun PantallaSeccion(
 private fun agregarOSumarProducto(
     carrito: List<ItemCarrito>,
     producto: Producto,
-    cantidad: Int
+    cantidad: Int,
 ): List<ItemCarrito> {
     val itemExistente = carrito.find { it.producto.id == producto.id }
     return if (itemExistente != null) {

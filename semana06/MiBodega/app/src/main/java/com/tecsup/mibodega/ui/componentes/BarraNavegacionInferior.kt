@@ -23,17 +23,19 @@ import com.tecsup.mibodega.ui.theme.GrisTexto
 import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
- * Representa los 4 destinos principales de la barra de navegación inferior.
+ * Representa los destinos de navegación en la app 'Mi Bodega'.
  *
  * @param ruta Identificador de ruta para Navigation Compose.
- * @param titulo Etiqueta visible bajo el ícono.
+ * @param titulo Etiqueta visible bajo el ícono (si aplica).
  * @param icono Ícono de la opción (Material Icons).
  */
 sealed class OpcionNavegacion(
     val ruta: String,
     val titulo: String,
-    val icono: ImageVector,
+    val icono: ImageVector? = null,
 ) {
+    object Bienvenida : OpcionNavegacion("bienvenida", "Bienvenida")
+    object Registro : OpcionNavegacion("registro", "Registro")
     object Inicio : OpcionNavegacion("inicio", "Inicio", Icons.Default.Home)
     object Categorias : OpcionNavegacion("categorias", "Categorías", Icons.AutoMirrored.Filled.List)
     object Pedidos : OpcionNavegacion("pedidos", "Pedidos", Icons.Default.Receipt)
@@ -92,10 +94,12 @@ fun BarraNavegacionInferiorContent(
                 selected = seleccionado,
                 onClick = { onOpcionSeleccionada(opcion) },
                 icon = {
-                    Icon(
-                        imageVector = opcion.icono,
-                        contentDescription = opcion.titulo,
-                    )
+                    opcion.icono?.let { icono ->
+                        Icon(
+                            imageVector = icono,
+                            contentDescription = opcion.titulo,
+                        )
+                    }
                 },
                 label = { Text(text = opcion.titulo) },
                 colors = NavigationBarItemDefaults.colors(
