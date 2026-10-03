@@ -41,7 +41,7 @@ fun ClienteApp() {
         navController = navController,
         startDestination = OpcionNavegacion.Bienvenida.ruta,
     ) {
-        // Pantalla de Bienvenida (Punto de entrada obligatorio)
+        // Pantalla de Bienvenida muestras  (Punto de entrada obligatorio)
         composable(OpcionNavegacion.Bienvenida.ruta) {
             BienvenidaScreen(
                 onRegistrarse = {
