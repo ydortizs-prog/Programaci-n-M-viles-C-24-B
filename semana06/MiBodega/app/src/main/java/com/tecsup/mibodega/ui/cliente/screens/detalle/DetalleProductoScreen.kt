@@ -44,7 +44,7 @@ import com.tecsup.mibodega.ui.theme.RojoPrecio
 import com.tecsup.mibodega.ui.theme.VerdeBodega
 
 /**
- * Pantalla 4: Detalle del producto de mibdega (mockup "Cliente").
+ * Pantalla 4: Detalle del productos de mibdega (mockup "Cliente").
  * Muestra la imagen real del producto encajada sin recortes o la canastilla por defecto.
  */
 @Composable
