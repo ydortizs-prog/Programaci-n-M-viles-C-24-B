@@ -32,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tecsup.mibodega.ui.cliente.modelo.Usuario
+import com.tecsup.mibodega.ui.cliente.modelo.UsuarioRepositorio
 import com.tecsup.mibodega.ui.componentes.BotonPrimario
 import com.tecsup.mibodega.ui.componentes.CampoTexto
 import com.tecsup.mibodega.ui.theme.BodegaTheme
@@ -41,7 +43,8 @@ import com.tecsup.mibodega.ui.theme.VerdeBodega
 /**
  * Pantalla 2: Registro de datos (mockup "Cliente").
  * Guarda su propio estado de formulario (remember) porque solo esta
- * pantalla lo necesita. Al enviar, entrega los datos ya listos.
+ * pantalla lo necesita. Al enviar, valida, guarda el usuario en el
+ * repositorio y avisa que la cuenta se creó.
  */
 
 // Registro
@@ -54,6 +57,8 @@ fun RegistroScreen(
     var telefono by remember { mutableStateOf("") }
     var direccion by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
+    var clave by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -101,6 +106,14 @@ fun RegistroScreen(
         Spacer(Modifier.height(16.dp))
 
         CampoTexto(
+            etiqueta = "Contraseña",
+            valor = clave,
+            onValorCambia = { clave = it },
+            placeholder = "Mínimo 6 caracteres"
+        )
+        Spacer(Modifier.height(16.dp))
+
+        CampoTexto(
             etiqueta = "Dirección de entrega",
             valor = direccion,
             onValorCambia = { direccion = it },
@@ -117,9 +130,28 @@ fun RegistroScreen(
 
         Spacer(Modifier.height(28.dp))
 
+        error?.let {
+            Text(it, color = MaterialTheme.colorScheme.error)
+            Spacer(Modifier.height(8.dp))
+        }
+
         BotonPrimario(
             texto = "Crear cuenta",
-            onClick = { onCrearCuenta(nombre, telefono, direccion, referencia) }
+            onClick = {
+                when {
+                    nombre.isBlank() || telefono.isBlank() || clave.isBlank() ->
+                        error = "Completa nombre, teléfono y contraseña"
+                    clave.length < 6 ->
+                        error = "La contraseña debe tener al menos 6 caracteres"
+                    !UsuarioRepositorio.registrar(
+                        Usuario(nombre.trim(), telefono.trim(), clave, direccion, referencia)
+                    ) -> error = "Ese teléfono ya está registrado"
+                    else -> {
+                        error = null
+                        onCrearCuenta(nombre, telefono, direccion, referencia)
+                    }
+                }
+            }
         )
 
         Spacer(Modifier.height(24.dp))
@@ -164,4 +196,3 @@ private fun RegistroPreview() {
         RegistroScreen(onVolver = {}, onCrearCuenta = { _, _, _, _ -> })
     }
 }
-

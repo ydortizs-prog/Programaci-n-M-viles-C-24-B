@@ -18,6 +18,7 @@ import com.tecsup.mibodega.ui.cliente.screens.carrito.CarritoScreen
 import com.tecsup.mibodega.ui.cliente.screens.categorias.CategoriasScreen
 import com.tecsup.mibodega.ui.cliente.screens.detalle.DetalleProductoScreen
 import com.tecsup.mibodega.ui.cliente.screens.inicio.InicioScreen
+import com.tecsup.mibodega.ui.cliente.screens.login.LoginScreen
 import com.tecsup.mibodega.ui.cliente.screens.pedidos.PedidosScreen
 import com.tecsup.mibodega.ui.cliente.screens.perfil.PerfilScreen
 import com.tecsup.mibodega.ui.cliente.screens.registro.RegistroScreen
@@ -27,6 +28,7 @@ import com.tecsup.mibodega.ui.componentes.OpcionNavegacion
 private object Rutas {
     const val DETALLE = "detalle/{productoId}"
     const val CARRITO = "carrito"
+    const val LOGIN = "login"
 
     fun detalle(productoId: Int) = "detalle/$productoId"
 }
@@ -48,10 +50,7 @@ fun ClienteApp() {
                     navController.navigate(OpcionNavegacion.Registro.ruta)
                 },
                 onIniciarSesion = {
-                    // Ingreso directo a Inicio descartando la pantalla de bienvenida
-                    navController.navigate(OpcionNavegacion.Inicio.ruta) {
-                        popUpTo(OpcionNavegacion.Bienvenida.ruta) { inclusive = true }
-                    }
+                    navController.navigate(Rutas.LOGIN)
                 },
                 onTerminos = { },
             )
@@ -62,6 +61,18 @@ fun ClienteApp() {
             RegistroScreen(
                 onVolver = { navController.popBackStack() },
                 onCrearCuenta = { _, _, _, _ ->
+                    navController.navigate(Rutas.LOGIN) {
+                        popUpTo(OpcionNavegacion.Registro.ruta) { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        // Pantalla de Login
+        composable(Rutas.LOGIN) {
+            LoginScreen(
+                onVolver = { navController.popBackStack() },
+                onLoginExitoso = {
                     navController.navigate(OpcionNavegacion.Inicio.ruta) {
                         popUpTo(OpcionNavegacion.Bienvenida.ruta) { inclusive = true }
                     }
